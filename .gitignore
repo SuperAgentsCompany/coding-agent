@@ -1,0 +1,24 @@
+# Logs and data
+*.log
+*.jsonl
+*.txt
+!benchmark_config.json
+
+# Ignore data json files, but keep configs
+*data*.json
+*results*.json
+*eval*.json
+
+# Cache
+__pycache__/
+.env
+
+# Large model data
+gemma-4-E4B-it/
+
+# Node modules
+node_modules/
+dist/
+
+# Prompts
+prompts_part_*
