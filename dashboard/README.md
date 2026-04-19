@@ -16,4 +16,4 @@ npm install
 npm run dev
 ```
 
-For more detailed architectural documentation, please refer to the [FRONTEND_ARCHITECTURE.md](https://github.com/SuperAgentsCompany/documentations/blob/main/FRONTEND_ARCHITECTURE.md) in the central documentation repository.
+For more detailed architectural documentation, please refer to the [FRONTEND_ARCHITECTURE.md](https://github.com/SuperAgentsCompany/documentations/blob/main/engineering/frontend_architecture.md) in the central documentation repository.

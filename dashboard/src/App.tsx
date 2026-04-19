@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Pause, Play, Square, Send, StepForward, Terminal, Brain, FileCode, User } from 'lucide-react';
+import { Pause, Play, Square, Send, StepForward, Terminal, Brain, FileCode, User, BarChart3, Activity as ActivityIcon, MessageSquare, ChevronRight, Info } from 'lucide-react';
 import LandingPage from './components/LandingPage';
+import { benchmarkData, Evaluation } from './data/benchmarkData';
 import './App.css';
 
 type ActivityType = 'reasoning' | 'file_edit' | 'log' | 'thought' | 'user_input' | 'approval';
 type AgentState = 'thinking' | 'acting' | 'paused' | 'idle' | 'pausing';
+type SubView = 'stream' | 'benchmarks';
 
 interface Activity {
   id: string;
@@ -21,10 +23,52 @@ const App: React.FC = () => {
     return <LandingPage onLaunch={() => setView('dashboard')} />;
   }
 
-  return <DashboardView />;
+  return <DashboardController onLogout={() => setView('landing')} />;
 };
 
-const DashboardView: React.FC = () => {
+const DashboardController: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
+  const [subView, setSubView] = useState<SubView>('stream');
+
+  return (
+    <div className="dashboard-container">
+      <header className="nova-header">
+        <div className="header-left">
+          <div className="logo" onClick={onLogout} style={{ cursor: 'pointer' }}>
+            <Square className="logo-icon" />
+            <span className="logo-text">NOVA</span>
+          </div>
+          <nav className="header-nav">
+            <button 
+              className={`nav-item ${subView === 'stream' ? 'active' : ''}`} 
+              onClick={() => setSubView('stream')}
+            >
+              <ActivityIcon size={18} />
+              <span>LIVE STREAM</span>
+            </button>
+            <button 
+              className={`nav-item ${subView === 'benchmarks' ? 'active' : ''}`} 
+              onClick={() => setSubView('benchmarks')}
+            >
+              <BarChart3 size={18} />
+              <span>BENCHMARKS</span>
+            </button>
+          </nav>
+        </div>
+        
+        <div className="header-right">
+          <div className="agent-info">
+            <span className="agent-name">Gemma4-Super</span>
+            <span className="status-pill acting">ONLINE</span>
+          </div>
+        </div>
+      </header>
+
+      {subView === 'stream' ? <CodeStreamView /> : <BenchmarkView />}
+    </div>
+  );
+};
+
+const CodeStreamView: React.FC = () => {
   const [activities, setActivities] = useState<Activity[]>([
     {
       id: '1',
@@ -61,7 +105,6 @@ const DashboardView: React.FC = () => {
       setAgentState('acting');
     } else if (agentState === 'acting') {
       setAgentState('pausing');
-      // Simulate transition to paused after current "tool call"
       setTimeout(() => {
         setAgentState('paused');
       }, 1500);
@@ -85,45 +128,30 @@ const DashboardView: React.FC = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      <header className="nova-header">
-        <div className="header-left">
-          <div className="logo">
-            <Square className="logo-icon" />
-            <span className="logo-text">NOVA</span>
-          </div>
-          <div className="agent-info">
-            <span className="agent-name">Gemma4-Super</span>
-            <span className={`status-pill ${agentState}`}>
-              {agentState === 'pausing' ? 'Pausing...' : agentState.charAt(0).toUpperCase() + agentState.slice(1)}
-            </span>
-          </div>
+    <>
+      <div className="stream-controls-bar">
+        <div className="control-group">
+          <label className="toggle-label">
+            <input 
+              type="checkbox" 
+              checked={stepThrough} 
+              onChange={(e) => setStepThrough(e.target.checked)} 
+            />
+            <span className="toggle-text">STEP-THROUGH MODE</span>
+          </label>
         </div>
         
-        <div className="header-controls">
-          <div className="step-toggle">
-            <label className="toggle-label">
-              <input 
-                type="checkbox" 
-                checked={stepThrough} 
-                onChange={(e) => setStepThrough(e.target.checked)} 
-              />
-              <span className="toggle-text">STEP-THROUGH</span>
-            </label>
-          </div>
-          
-          <button 
-            className={`control-btn pause-btn ${agentState === 'paused' ? 'resume' : ''} ${agentState === 'pausing' ? 'waiting' : ''}`} 
-            onClick={togglePause}
-            disabled={agentState === 'pausing'}
-          >
-            {agentState === 'paused' ? <Play size={18} /> : (agentState === 'pausing' ? <div className="spinner" /> : <Pause size={18} />)}
-            <span>
-              {agentState === 'paused' ? 'RESUME' : (agentState === 'pausing' ? 'WAITING...' : 'PAUSE')}
-            </span>
-          </button>
-        </div>
-      </header>
+        <button 
+          className={`control-btn pause-btn ${agentState === 'paused' ? 'resume' : ''} ${agentState === 'pausing' ? 'waiting' : ''}`} 
+          onClick={togglePause}
+          disabled={agentState === 'pausing'}
+        >
+          {agentState === 'paused' ? <Play size={16} /> : (agentState === 'pausing' ? <div className="spinner" /> : <Pause size={16} />)}
+          <span>
+            {agentState === 'paused' ? 'RESUME AGENT' : (agentState === 'pausing' ? 'WAITING...' : 'PAUSE EXECUTION')}
+          </span>
+        </button>
+      </div>
 
       <main className="code-stream">
         {activities.map((activity) => (
@@ -175,10 +203,109 @@ const DashboardView: React.FC = () => {
           </div>
         </div>
       </footer>
-    </div>
+    </>
   );
 };
 
+const BenchmarkView: React.FC = () => {
+  const { summary, evaluations } = benchmarkData;
+
+  return (
+    <main className="benchmark-container">
+      <section className="benchmark-header">
+        <h2>Performance Benchmarks</h2>
+        <p>Comprehensive evaluation of Gemma4-Super across multiple coding and architectural dimensions.</p>
+      </section>
+
+      <div className="stats-grid">
+        {Object.entries(summary.average_scores).map(([key, value]) => {
+          if (key === 'total_weighted') return null;
+          return (
+            <div key={key} className="stat-card">
+              <span className="stat-label">{key.replace('_', ' ').toUpperCase()}</span>
+              <div className="stat-value-container">
+                <span className="stat-value">{value.toFixed(1)}</span>
+                <span className="stat-max">/ 5.0</span>
+              </div>
+              <div className="progress-bar-bg">
+                <div className="progress-bar-fill" style={{ width: `${(value / 5) * 100}%` }} />
+              </div>
+            </div>
+          );
+        })}
+        <div className="stat-card total-weighted">
+          <span className="stat-label">TOTAL WEIGHTED</span>
+          <div className="stat-value-container">
+            <span className="stat-value">{summary.average_scores.total_weighted.toFixed(1)}</span>
+            <span className="stat-max">/ 5.0</span>
+          </div>
+          <div className="progress-bar-bg">
+            <div className="progress-bar-fill gold" style={{ width: `${(summary.average_scores.total_weighted / 5) * 100}%` }} />
+          </div>
+        </div>
+      </div>
+
+      <section className="evaluations-list">
+        <h3>Individual Test Cases</h3>
+        {evaluations.map((evaluation, idx) => (
+          <EvaluationCard key={idx} evaluation={evaluation} />
+        ))}
+      </section>
+    </main>
+  );
+};
+
+const EvaluationCard: React.FC<{ evaluation: Evaluation }> = ({ evaluation }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div className="eval-card">
+      <div className="eval-card-summary" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="eval-info">
+          <span className="eval-topic">{evaluation.topic}</span>
+          <div className="eval-metrics">
+            <span>{evaluation.tokens} tokens</span>
+            <span>{evaluation.tps.toFixed(1)} t/s</span>
+            <span>{evaluation.duration.toFixed(2)}s</span>
+          </div>
+        </div>
+        <div className="eval-score-pill">
+          SCORE: {evaluation.weighted_score.toFixed(1)}
+          <ChevronRight size={16} className={`arrow ${isExpanded ? 'expanded' : ''}`} />
+        </div>
+      </div>
+      
+      {isExpanded && (
+        <div className="eval-card-details">
+          <div className="detail-section">
+            <h4><MessageSquare size={14} /> PROMPT</h4>
+            <div className="code-block">{evaluation.prompt}</div>
+          </div>
+          <div className="detail-section">
+            <h4><Brain size={14} /> AGENT RESPONSE</h4>
+            <pre className="code-block response">{evaluation.response}</pre>
+          </div>
+          <div className="detail-section">
+            <h4><Info size={14} /> EVALUATION JUSTIFICATION</h4>
+            <p className="justification-text">{evaluation.evaluation.justification}</p>
+            <div className="detailed-scores">
+              {Object.entries(evaluation.evaluation.scores).map(([key, value]) => (
+                <div key={key} className="score-item">
+                  <span>{key.replace('_', ' ').toUpperCase()}</span>
+                  <div className="score-dots">
+                    {[1, 2, 3, 4, 5].map(d => (
+                      <div key={d} className={`dot ${d <= value ? 'filled' : ''}`} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const ActivityCard: React.FC<{ activity: Activity, onApprove?: () => void }> = ({ activity, onApprove }) => {
   const getIcon = () => {
