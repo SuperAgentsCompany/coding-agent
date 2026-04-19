@@ -13,19 +13,12 @@ High-quality synthetic pedagogical data and coding interactions are generated to
 - `generate_coding_data.py`: Generates the initial Supervised Fine-Tuning (SFT) dataset.
 - `generate_dpo_pairs.py`: Produces preference pairs (chosen vs. rejected) for DPO alignment.
 
-<<<<<<< Updated upstream
 ## Model Specialization Pipeline
 1. **Supervised Fine-Tuning (SFT):** `finetune_coding.py` trains the base model using Unsloth (or raw Hugging Face `trl`/`peft`) on GCP L4 GPUs.
 2. **Direct Preference Optimization (DPO):** `dpo_finetune_coding.py` aligns the model with our desired coding behaviors using TRL's `DPOTrainer`.
 3. **Evaluation:** `run_benchmark.py` and `evaluate_coding.py` benchmark the model against the base model for domain-specific accuracy (Pass@1, etc.). `llm_judge.py` is used for qualitative scoring.
 4. **Deployment:** The combined LoRA weights are merged and served via vLLM on GCP Cloud Run.
 
-## Inference Data Flow
-1. **Agent Task:** Paperclip orchestrates a task to the specialized agent.
-2. **Inference:** Handled by the fine-tuned Gemma4 model served via vLLM.
-3. **Reasoning Extraction:** The model's internal monologue is captured to provide transparency to the orchestrator.
-4. **Tool Execution:** The model outputs bash, Python, or API tool-calls that are executed by the Paperclip adapter.
-=======
 ## Super Coding Model Architecture
 The Super Coding Model is a specialized version of Gemma4-4B, optimized for autonomous software engineering tasks. It employs a unique training and reasoning methodology to ensure high-fidelity tool usage and architectural integrity.
 
@@ -46,4 +39,9 @@ When integrated into the Paperclip layer, the Super Coding Model operates with a
 - **Research:** `grep_search`, `glob`, `read_file`.
 - **Execution:** `run_shell_command`, `replace`, `write_file`.
 - **Validation:** Automated execution of project-specific test runners and linters.
->>>>>>> Stashed changes
+
+## Inference Data Flow
+1. **Agent Task:** Paperclip orchestrates a task to the specialized agent.
+2. **Inference:** Handled by the fine-tuned Gemma4 model served via vLLM.
+3. **Reasoning Extraction:** The model's internal monologue is captured to provide transparency to the orchestrator.
+4. **Tool Execution:** The model outputs bash, Python, or API tool-calls that are executed by the Paperclip adapter.
