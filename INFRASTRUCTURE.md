@@ -11,7 +11,11 @@ Project ID: `super-power-agents`
     - Memory: 80Gi
     - CPU: 20
     - Software: vLLM serving stack with OpenAI-compatible API.
+<<<<<<< Updated upstream
     - Configuration: Deployed via `pytorch-vllm-serve:gemma4` container.
+=======
+    - **Current Model (Baseline):** `gs://super-power-agents-model-cache/models/gemma4-coding-sft-merged` (Rolled back from DPO attempt on 2026-04-19)
+>>>>>>> Stashed changes
 2.  **Fine-tuning (Compute Engine):**
     - VM: `hermes-finetune-gemma`
     - Region: `asia-southeast1-b`

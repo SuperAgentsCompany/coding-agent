@@ -30,7 +30,7 @@ spec:
       containers:
       - args:
         - serve
-        - gs://super-power-agents-model-cache/models/gemma4-coding-merged
+        - gs://super-power-agents-model-cache/models/gemma4-coding-sft-merged
         - --enable-chunked-prefill
         - --enable-prefix-caching
         - --generation-config=auto

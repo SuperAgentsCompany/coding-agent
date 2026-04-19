@@ -3,7 +3,7 @@ import torch
 import os
 
 adapter_path = "gemma4-coding-adapter"
-output_dir = "gemma4-coding-merged"
+output_dir = "gemma4-coding-sft-merged"
 
 print("Loading model and adapter...")
 model, tokenizer = FastLanguageModel.from_pretrained(
