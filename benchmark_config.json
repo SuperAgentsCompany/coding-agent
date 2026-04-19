@@ -1,0 +1,48 @@
+{
+  "project": "Super Coding Model",
+  "version": "1.0.0",
+  "suites": [
+    {
+      "name": "QA Standardized Tasks",
+      "file": "qa_test_suite.jsonl",
+      "weight": 0.7
+    },
+    {
+      "name": "Agentic Multi-Step Tasks",
+      "file": "agentic_test_suite.jsonl",
+      "weight": 0.3
+    }
+  ],
+  "metrics": {
+    "correctness": {
+      "weight": 0.4,
+      "method": "llm-judge",
+      "criteria": "Does the code solve the problem as described?"
+    },
+    "instruction_following": {
+      "weight": 0.2,
+      "method": "llm-judge",
+      "criteria": "Did it follow all constraints?"
+    },
+    "idiomaticity": {
+      "weight": 0.15,
+      "method": "llm-judge",
+      "criteria": "Is it modern, best-practice code?"
+    },
+    "pedagogical_value": {
+      "weight": 0.15,
+      "method": "llm-judge",
+      "criteria": "Is the explanation clear and helpful?"
+    },
+    "conciseness": {
+      "weight": 0.1,
+      "method": "llm-judge",
+      "criteria": "Is it direct and high-signal?"
+    }
+  },
+  "targets": {
+    "total_score": 4.5,
+    "min_correctness": 0.9,
+    "min_tps": 50
+  }
+}
