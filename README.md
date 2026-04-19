@@ -2,9 +2,14 @@
 
 This repository contains the training scripts, data generation pipelines, and evaluation frameworks for the SUPAA **Super Coding Model**.
 
+## Technical Documentation
+For frontend architecture and design specs related to the Coding Agent Dashboard, refer to:
+- [FRONTEND_ARCHITECTURE.md](https://github.com/SuperAgentsCompany/documentations/blob/main/FRONTEND_ARCHITECTURE.md) - Frontend architecture, apps, and styling guidelines.
+
 ## Repository Structure
 
-- `api/`, `src/`, `tests/`, `dashboard/`: Auxiliary source code and dashboards.
+- `dashboard/`: React + Vite frontend application for visualizing code generation streams.
+- `api/`, `src/`, `tests/`: Auxiliary source code and dashboards.
 - `coding_data.jsonl`, `dpo_data.jsonl`, `qa_test_suite.jsonl`: Training and evaluation datasets.
 - `finetune_coding.py`: Supervised Fine-Tuning (SFT) script for Gemma4.
 - `dpo_finetune_coding.py`: Direct Preference Optimization (DPO) script.
